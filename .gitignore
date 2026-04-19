@@ -1,0 +1,7 @@
+# 로컬 전용 노트·기획 문서 (커밋 제외)
+.local/
+
+node_modules
+dist
+.env
+.env.local
