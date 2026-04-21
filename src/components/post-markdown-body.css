@@ -1,0 +1,9 @@
+/* Vite pre-bundle / optimizeDeps URL 패턴 (…/deps/…?v=…) 인라인 코드 */
+.markdown-body code.markdown-code-vite-dep,
+.desktop-window-body .markdown-body code.markdown-code-vite-dep {
+  background: #e0f2fe;
+  border: 1px solid #bae6fd;
+  border-radius: 4px;
+  padding: 0.12em 0.35em;
+  font-size: 0.9em;
+}

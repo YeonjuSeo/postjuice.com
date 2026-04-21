@@ -1,0 +1,78 @@
+.markdown-table-shell {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+body.markdown-table-col-dragging {
+  cursor: col-resize !important;
+  user-select: none;
+}
+
+.markdown-table {
+  border-collapse: collapse;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  font-size: 0.9375rem;
+}
+
+.markdown-table th,
+.markdown-table td {
+  border: 1px solid #cbd5e1;
+  padding: 0.5rem 0.65rem;
+  vertical-align: top;
+  text-align: left;
+  word-break: break-word;
+}
+
+.markdown-table th {
+  background: #f1f5f9;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.markdown-table tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.markdown-table pre {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.markdown-table-grip-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.markdown-table-grip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  margin-left: -6px;
+  padding: 0;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  cursor: col-resize;
+  pointer-events: auto;
+  box-sizing: border-box;
+}
+
+.markdown-table-grip:hover,
+.markdown-table-grip:focus-visible {
+  background: rgba(37, 99, 235, 0.18);
+}
+
+.markdown-table-grip:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 0;
+}

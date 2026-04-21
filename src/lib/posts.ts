@@ -5,7 +5,7 @@ export type PostMeta = {
   title: string;
   description: string;
   date: string;
-  /** 데스크톱 아이콘·창 필터용 (예: notes, dev) */
+  /** 데스크톱 아이콘, 창 필터용 (예: notes, dev) */
   category?: string;
   ogImage?: string;
 };

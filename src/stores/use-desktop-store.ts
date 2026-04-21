@@ -24,7 +24,7 @@ function randomId(): string {
   return `win-${Math.random().toString(36).slice(2, 10)}`;
 }
 
-/** 같은 아이콘·같은 글(slug)·같은 카테고리 목록 창은 하나만 두고 재포커스한다 */
+/** 같은 아이콘, 같은 글(slug), 같은 카테고리 목록 창은 하나만 두고 재포커스한다 */
 export function getDesktopWindowDedupeKey(
   item: DesktopWindowPayload | DesktopWindowRecord,
 ): string {
