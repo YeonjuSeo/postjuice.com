@@ -109,13 +109,22 @@
   pointer-events: none;
 }
 
-.desktop-window {
+.desktop-window-frame {
   pointer-events: auto;
   position: absolute;
+  box-sizing: border-box;
+  touch-action: none;
+  overflow: visible;
+}
+
+.desktop-window {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  max-height: min(74vh, 680px);
-  width: min(92vw, 520px);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
   border-radius: 11px;
   box-shadow:
     0 24px 52px rgba(15, 23, 42, 0.2),
@@ -123,9 +132,89 @@
   background: rgba(248, 250, 252, 0.96);
   backdrop-filter: blur(12px);
   overflow: hidden;
+  pointer-events: none;
+}
+
+.desktop-window-titlebar,
+.desktop-window-body {
+  pointer-events: auto;
+}
+
+.desktop-window-resize-layer {
+  position: absolute;
+  inset: -8px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.desktop-window-resize-handle {
+  position: absolute;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.desktop-window-resize-handle--nw {
+  top: 8px;
+  left: 8px;
+  width: 14px;
+  height: 14px;
+  transform: translate(-50%, -50%);
+  cursor: nwse-resize;
+}
+
+.desktop-window-resize-handle--ne {
+  top: 8px;
+  right: 8px;
+  width: 14px;
+  height: 14px;
+  transform: translate(50%, -50%);
+  cursor: nesw-resize;
+}
+
+.desktop-window-resize-handle--sw {
+  bottom: 8px;
+  left: 8px;
+  width: 14px;
+  height: 14px;
+  transform: translate(-50%, 50%);
+  cursor: nesw-resize;
+}
+
+.desktop-window-resize-handle--se {
+  bottom: 8px;
+  right: 8px;
+  width: 14px;
+  height: 14px;
+  transform: translate(50%, 50%);
+  cursor: nwse-resize;
+}
+
+.desktop-window-resize-handle--s {
+  bottom: 0;
+  left: 14px;
+  right: 14px;
+  height: 8px;
+  cursor: ns-resize;
+}
+
+.desktop-window-resize-handle--e {
+  top: 14px;
+  right: 0;
+  bottom: 14px;
+  width: 8px;
+  cursor: ew-resize;
+}
+
+.desktop-window-resize-handle--w {
+  top: 14px;
+  left: 0;
+  bottom: 14px;
+  width: 8px;
+  cursor: ew-resize;
 }
 
 .desktop-window-titlebar {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.5rem;
