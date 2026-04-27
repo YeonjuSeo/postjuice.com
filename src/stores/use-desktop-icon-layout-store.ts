@@ -1,24 +1,47 @@
-import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
-import { DESKTOP_ICONS } from '@/config/desktop-icons';
+import { DESKTOP_ICONS } from "@/config/desktop-icons";
 
 export type IconPixelPosition = { x: number; y: number };
 
-/** 아이콘 버튼 박스 (드래그 클램프·레이아웃과 맞출 것) */
+/** Icon hit box (drag clamp, layout) */
 export const ICON_HIT_BOX = { w: 96, h: 104 };
 
-/** 최초·리셋 시 그리드 배치 */
+const GRID_STEP = 112;
+const LAYOUT_MARGIN = 24;
+
+function buildDefaultPositions(): Record<string, IconPixelPosition> {
+  const out: Record<string, IconPixelPosition> = {};
+  let i = 0;
+  for (const icon of DESKTOP_ICONS) {
+    if (icon.id === "force-quit") continue;
+    out[icon.id] = { x: LAYOUT_MARGIN + i * GRID_STEP, y: LAYOUT_MARGIN };
+    i += 1;
+  }
+  out["force-quit"] = { x: LAYOUT_MARGIN, y: LAYOUT_MARGIN };
+  return out;
+}
+
+/** Default grid; force-quit is placed by DesktopShell using surface size */
 export const ICON_LAYOUT_DEFAULTS: Record<string, IconPixelPosition> =
-  Object.fromEntries(
-    DESKTOP_ICONS.map((icon, index) => [
-      icon.id,
-      { x: 24 + index * 112, y: 24 },
-    ]),
-  );
+  buildDefaultPositions();
+
+/** Bottom-right of desktop icon surface with LAYOUT_MARGIN inset */
+export function getForceQuitDefaultPosition(
+  surfaceWidth: number,
+  surfaceHeight: number,
+): IconPixelPosition {
+  const w = Math.max(0, surfaceWidth);
+  const h = Math.max(0, surfaceHeight);
+  return {
+    x: Math.max(LAYOUT_MARGIN, w - ICON_HIT_BOX.w - LAYOUT_MARGIN),
+    y: Math.max(LAYOUT_MARGIN, h - ICON_HIT_BOX.h - LAYOUT_MARGIN),
+  };
+}
 
 type IconLayoutState = {
-  /** 비어 있으면 `ICON_LAYOUT_DEFAULTS[id]` 사용 */
+  /** When missing, use ICON_LAYOUT_DEFAULTS[id] */
   positions: Partial<Record<string, IconPixelPosition>>;
   setIconPosition: (id: string, pos: IconPixelPosition) => void;
 };
@@ -33,7 +56,7 @@ export const useDesktopIconLayoutStore = create<IconLayoutState>()(
         })),
     }),
     {
-      name: 'postjuice-desktop-icon-positions',
+      name: "postjuice-desktop-icon-positions",
       storage: createJSONStorage(() => localStorage),
       partialize: (s) => ({ positions: s.positions }),
       merge: (persisted, current) => {
