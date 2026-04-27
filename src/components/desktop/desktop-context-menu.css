@@ -1,0 +1,38 @@
+.desktop-context-menu {
+  position: fixed;
+  z-index: 200001;
+  min-width: 196px;
+  padding: 0.4rem 0;
+  margin: 0;
+  list-style: none;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow:
+    0 12px 40px rgba(15, 23, 42, 0.18),
+    0 0 0 1px rgba(15, 23, 42, 0.06);
+  font-size: 0.8125rem;
+  color: #334155;
+}
+
+.desktop-context-menu__item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.desktop-context-menu__item:hover,
+.desktop-context-menu__item:focus-visible {
+  background: rgba(241, 245, 249, 0.95);
+  outline: none;
+}
+
+.desktop-context-menu__item:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
