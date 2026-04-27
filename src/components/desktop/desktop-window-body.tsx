@@ -7,6 +7,7 @@ import type { DesktopWindowRecord } from '@/stores/use-desktop-store';
 import { getPostBySlug, getPostsByCategory } from '@/lib/posts';
 
 import { PostMarkdownBody } from '@/components/post-markdown-body';
+import { TrashBinPanel } from '@/components/desktop/trash-bin-panel';
 
 type DesktopWindowBodyProps = {
   windowRecord: DesktopWindowRecord;
@@ -25,6 +26,8 @@ export function DesktopWindowBody({ windowRecord }: DesktopWindowBodyProps) {
       );
     case 'post':
       return <PostDetailPanel slug={windowRecord.slug} />;
+    case 'trash-bin':
+      return <TrashBinPanel />;
   }
 }
 
@@ -33,7 +36,7 @@ function ProfilePanel() {
     <div style={{ padding: '0.25rem 0' }}>
       <p style={{ marginTop: 0 }}>postjuice 데스크톱 · 개인 사이트</p>
       <p style={{ color: '#64748b', marginBottom: 0 }}>
-        아이콘을 더블클릭하면 창이 열립니다. 모바일은 한 번 탭하면 됩니다.
+        아이콘을 더블클릭하면 창이 열립니다. 모바일에서는 한 번 탭합니다.
       </p>
     </div>
   );

@@ -1,12 +1,19 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
-import { DesktopWindowBody } from '@/components/desktop/desktop-window-body';
+import { DesktopWindowBody } from "@/components/desktop/desktop-window-body";
 
-import type { DesktopWindowRecord } from '@/stores/use-desktop-store';
+import type { DesktopWindowRecord } from "@/stores/use-desktop-store";
 
-import { useDesktopStore } from '@/stores/use-desktop-store';
+import { useDinoRampageStore } from "@/stores/use-dino-rampage-store";
+import { useDesktopStore } from "@/stores/use-desktop-store";
 
-type ResizeEdge = 'nw' | 'ne' | 'sw' | 'se' | 'e' | 'w' | 's';
+type ResizeEdge = "nw" | "ne" | "sw" | "se" | "e" | "w" | "s";
 
 type DesktopWindowProps = {
   windowRecord: DesktopWindowRecord;
@@ -14,7 +21,7 @@ type DesktopWindowProps = {
 };
 
 function defaultWindowSize() {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return { w: 520, h: 440 };
   }
   return {
@@ -28,13 +35,13 @@ function clamp(n: number, min: number, max: number) {
 }
 
 const RESIZE_HANDLES: { edge: ResizeEdge; classSuffix: string }[] = [
-  { edge: 'nw', classSuffix: 'nw' },
-  { edge: 'ne', classSuffix: 'ne' },
-  { edge: 'sw', classSuffix: 'sw' },
-  { edge: 'se', classSuffix: 'se' },
-  { edge: 's', classSuffix: 's' },
-  { edge: 'e', classSuffix: 'e' },
-  { edge: 'w', classSuffix: 'w' },
+  { edge: "nw", classSuffix: "nw" },
+  { edge: "ne", classSuffix: "ne" },
+  { edge: "sw", classSuffix: "sw" },
+  { edge: "se", classSuffix: "se" },
+  { edge: "s", classSuffix: "s" },
+  { edge: "e", classSuffix: "e" },
+  { edge: "w", classSuffix: "w" },
 ];
 
 export function DesktopWindow({
@@ -43,6 +50,9 @@ export function DesktopWindow({
 }: DesktopWindowProps) {
   const closeWindow = useDesktopStore((s) => s.closeWindow);
   const focusWindow = useDesktopStore((s) => s.focusWindow);
+  const rampageTiltDeg = useDinoRampageStore(
+    (s) => s.windowTiltDeg[windowRecord.id] ?? 0,
+  );
 
   const dragRef = useRef<{
     pointerId: number;
@@ -84,48 +94,51 @@ export function DesktopWindow({
     return { minW, minH, maxW, maxH };
   }, []);
 
-  const onPointerMove = useCallback((e: PointerEvent) => {
-    const r = resizeRef.current;
-    if (r && r.pointerId === e.pointerId) {
-      const dx = e.clientX - r.startX;
-      const dy = e.clientY - r.startY;
-      let w = r.w0;
-      let h = r.h0;
-      let ox = r.ox0;
-      let oy = r.oy0;
-      const edge = r.edge;
+  const onPointerMove = useCallback(
+    (e: PointerEvent) => {
+      const r = resizeRef.current;
+      if (r && r.pointerId === e.pointerId) {
+        const dx = e.clientX - r.startX;
+        const dy = e.clientY - r.startY;
+        let w = r.w0;
+        let h = r.h0;
+        let ox = r.ox0;
+        let oy = r.oy0;
+        const edge = r.edge;
 
-      if (edge.includes('e')) {
-        w += dx;
-        ox += dx / 2;
-      }
-      if (edge.includes('w')) {
-        w -= dx;
-        ox += dx / 2;
-      }
-      if (edge.includes('s')) {
-        h += dy;
-      }
-      if (edge.includes('n')) {
-        h -= dy;
-        oy += dy;
+        if (edge.includes("e")) {
+          w += dx;
+          ox += dx / 2;
+        }
+        if (edge.includes("w")) {
+          w -= dx;
+          ox += dx / 2;
+        }
+        if (edge.includes("s")) {
+          h += dy;
+        }
+        if (edge.includes("n")) {
+          h -= dy;
+          oy += dy;
+        }
+
+        const { minW, minH, maxW, maxH } = readResizeLimits();
+        w = clamp(w, minW, maxW);
+        h = clamp(h, minH, maxH);
+        setSize({ w, h });
+        setOffset({ x: ox, y: oy });
+        return;
       }
 
-      const { minW, minH, maxW, maxH } = readResizeLimits();
-      w = clamp(w, minW, maxW);
-      h = clamp(h, minH, maxH);
-      setSize({ w, h });
-      setOffset({ x: ox, y: oy });
-      return;
-    }
-
-    const d = dragRef.current;
-    if (!d || d.pointerId !== e.pointerId) return;
-    setOffset({
-      x: d.ox + (e.clientX - d.startX),
-      y: d.oy + (e.clientY - d.startY),
-    });
-  }, [readResizeLimits]);
+      const d = dragRef.current;
+      if (!d || d.pointerId !== e.pointerId) return;
+      setOffset({
+        x: d.ox + (e.clientX - d.startX),
+        y: d.oy + (e.clientY - d.startY),
+      });
+    },
+    [readResizeLimits],
+  );
 
   const endPointer = useCallback((e: PointerEvent) => {
     const r = resizeRef.current;
@@ -150,20 +163,20 @@ export function DesktopWindow({
   }, []);
 
   useEffect(() => {
-    window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerup', endPointer);
-    window.addEventListener('pointercancel', endPointer);
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", endPointer);
+    window.addEventListener("pointercancel", endPointer);
     return () => {
-      window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('pointerup', endPointer);
-      window.removeEventListener('pointercancel', endPointer);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", endPointer);
+      window.removeEventListener("pointercancel", endPointer);
     };
   }, [endPointer, onPointerMove]);
 
   function handleTitlePointerDown(e: React.PointerEvent) {
     if (e.button !== 0) return;
     const target = e.target as HTMLElement | null;
-    if (target?.closest?.('.desktop-window-close')) return;
+    if (target?.closest?.(".desktop-window-close")) return;
 
     focusWindow(windowRecord.id);
     const el = e.currentTarget as HTMLElement;
@@ -208,10 +221,12 @@ export function DesktopWindow({
   return (
     <div
       className="desktop-window-frame"
+      data-desktop-window-id={windowRecord.id}
       style={{
         left: `calc(50% + ${offset.x}px)`,
         top: `${72 + offset.y}px`,
-        transform: 'translateX(-50%)',
+        transform: `translateX(-50%) rotate(${rampageTiltDeg}deg)`,
+        transition: "transform 0.28s ease",
         zIndex: windowRecord.zIndex,
         width: size.w,
         height: size.h,
@@ -235,7 +250,7 @@ export function DesktopWindow({
           <button
             type="button"
             className="desktop-window-close"
-            aria-label={'\uB2EB\uAE30'}
+            aria-label={"\uB2EB\uAE30"}
             onPointerDown={(ev) => {
               ev.stopPropagation();
             }}
@@ -244,7 +259,7 @@ export function DesktopWindow({
               closeWindow(windowRecord.id);
             }}
           >
-            {'\u00D7'}
+            {"\u00D7"}
           </button>
         </div>
         <div className="desktop-window-body">
