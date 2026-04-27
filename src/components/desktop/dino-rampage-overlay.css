@@ -1,0 +1,65 @@
+.dino-rampage {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  pointer-events: none;
+}
+
+.dino-rampage__dino {
+  position: fixed;
+  bottom: 10%;
+  max-height: min(40vh, 240px);
+  width: auto;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+  left: 100%;
+  transform: translateX(0);
+}
+
+.dino-rampage__dino--start {
+  transition: none;
+}
+
+.dino-rampage__dino--mid {
+  left: 50%;
+  transform: translateX(-50%);
+  transition:
+    left 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dino-rampage__dino--bob {
+  animation: dino-rampage-bob 0.45s ease-in-out 2;
+  animation-fill-mode: forwards;
+}
+
+@keyframes dino-rampage-bob {
+  0%,
+  100% {
+    transform: translate(-50%, 0);
+  }
+
+  50% {
+    transform: translate(-50%, -20px);
+  }
+}
+
+.dino-rampage__dino--mid.dino-rampage__dino--out {
+  left: -45%;
+  transform: translateX(0);
+  transition:
+    left 0.8s ease-in,
+    transform 0.8s ease-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dino-rampage__dino--mid,
+  .dino-rampage__dino--out {
+    transition: none;
+  }
+
+  .dino-rampage__dino--bob {
+    animation: none;
+  }
+}

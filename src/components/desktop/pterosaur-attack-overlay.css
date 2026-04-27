@@ -1,0 +1,26 @@
+.pterosaur-attack {
+  position: fixed;
+  inset: 0;
+  z-index: 420;
+  pointer-events: none;
+}
+
+.pterosaur-attack__bird {
+  position: fixed;
+  width: auto;
+  height: auto;
+  max-height: min(28vh, 200px);
+  user-select: none;
+  -webkit-user-drag: none;
+  will-change: left, top, transform;
+  filter: drop-shadow(0 6px 12px rgba(15, 23, 42, 0.2));
+  backface-visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pterosaur-attack__bird {
+    transition:
+      top 0.88s cubic-bezier(0.25, 0.9, 0.32, 1),
+      left 0.88s cubic-bezier(0.25, 0.9, 0.32, 1) !important;
+  }
+}
