@@ -35,7 +35,7 @@
 }
 
 .desktop-wallpaper::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: radial-gradient(
@@ -67,7 +67,10 @@
   border-radius: 14px;
   cursor: grab;
   color: #0f172a;
-  transition: background 0.15s ease, transform 0.12s ease, opacity 0.12s ease;
+  transition:
+    background 0.15s ease,
+    transform 0.12s ease,
+    opacity 0.12s ease;
 }
 
 .desktop-icon:hover {
@@ -100,6 +103,51 @@
   line-height: 1.25;
   max-width: 100%;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+  white-space: pre-line;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.desktop-icon-rename-input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 1.4em;
+  max-height: 6.5rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  resize: none;
+  font-size: 0.75rem;
+  font-family: inherit;
+  text-align: center;
+  line-height: 1.2;
+  padding: 0.15rem 0.2rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #0f172a;
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.desktop-icon-rename-input:focus,
+.desktop-icon-rename-input:focus-visible {
+  outline: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.desktop-icon-rename-input::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .desktop-windows-layer {
