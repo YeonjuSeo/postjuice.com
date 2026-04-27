@@ -222,7 +222,7 @@ export function MarkdownResizableTable(props: MarkdownTableProps) {
               type="button"
               className="markdown-table-grip"
               style={{ left: `${leftPct}%` }}
-              aria-label={`¿­ ${i + 1}°ú ${i + 2} »çÀÌ ³Êºñ Á¶Àý`}
+              aria-label={`ì—´ ${i + 1}ê³¼ ${i + 2} ì‚¬ì´ ë„ˆë¹„ ì¡°ì ˆ`}
               onPointerDown={(ev) => {
                 startResize(i, ev);
               }}

@@ -1,4 +1,4 @@
-/* Vite pre-bundle / optimizeDeps URL 패턴 (…/deps/…?v=…) 인라인 코드 */
+/* Vite optimizeDeps: pre-bundled /node_modules/.vite/deps/ import inline code */
 .markdown-body code.markdown-code-vite-dep,
 .desktop-window-body .markdown-body code.markdown-code-vite-dep {
   background: #e0f2fe;
