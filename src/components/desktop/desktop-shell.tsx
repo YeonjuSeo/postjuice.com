@@ -1,4 +1,11 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { DESKTOP_ICONS } from "@/config/desktop-icons";
 
@@ -14,8 +21,10 @@ import { DesktopWindow } from "@/components/desktop/desktop-window";
 
 import "@/components/desktop/desktop.css";
 
+import { useMiniPlayerStore } from "@/stores/use-mini-player-store";
 import { useDesktopIconSessionStore } from "@/stores/use-desktop-icon-session-store";
 import {
+  clampStoredDesktopIconsToSurface,
   getForceQuitDefaultPosition,
   useDesktopIconLayoutStore,
 } from "@/stores/use-desktop-icon-layout-store";
@@ -63,6 +72,39 @@ export function DesktopShell() {
     return () => cancelAnimationFrame(id);
   }, [setIconPosition]);
 
+  useEffect(() => {
+    const el = surfaceRef.current;
+    if (!el) return;
+
+    let rafId = 0;
+    function runClamp() {
+      rafId = 0;
+      const surface = surfaceRef.current;
+      if (!surface) return;
+      clampStoredDesktopIconsToSurface(
+        surface.clientWidth,
+        surface.clientHeight,
+      );
+    }
+    function scheduleClamp() {
+      if (rafId !== 0) return;
+      rafId = window.requestAnimationFrame(runClamp);
+    }
+
+    scheduleClamp();
+
+    const ro = new ResizeObserver(scheduleClamp);
+    ro.observe(el);
+
+    window.addEventListener("resize", scheduleClamp, { passive: true });
+
+    return () => {
+      if (rafId !== 0) window.cancelAnimationFrame(rafId);
+      ro.disconnect();
+      window.removeEventListener("resize", scheduleClamp);
+    };
+  }, []);
+
   return (
     <DesktopDinoRampageContext.Provider value={startDinoRampage}>
       <DesktopPterosaurContext.Provider value={startPterosaurAttack}>
@@ -96,7 +138,12 @@ export function DesktopShell() {
           </div>
 
           {dinoOpen ? (
-            <DinoRampageOverlay onClose={() => setDinoOpen(false)} />
+            <DinoRampageOverlay
+              onClose={() => setDinoOpen(false)}
+              onAfterRampageImpact={() =>
+                useMiniPlayerStore.getState().bumpForceQuit()
+              }
+            />
           ) : null}
           {pterosaurIconId ? (
             <PterosaurAttackOverlay

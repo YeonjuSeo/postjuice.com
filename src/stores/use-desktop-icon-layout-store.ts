@@ -40,6 +40,35 @@ export function getForceQuitDefaultPosition(
   };
 }
 
+export function clampIconPositionToSurface(
+  pos: IconPixelPosition,
+  surfaceWidth: number,
+  surfaceHeight: number,
+): IconPixelPosition {
+  const maxX = Math.max(0, surfaceWidth - ICON_HIT_BOX.w);
+  const maxY = Math.max(0, surfaceHeight - ICON_HIT_BOX.h);
+  return {
+    x: Math.min(Math.max(0, pos.x), maxX),
+    y: Math.min(Math.max(0, pos.y), maxY),
+  };
+}
+
+/** 서피스가 줄었을 때 넘친 좌표를 스토어에서 보정한다. */
+export function clampStoredDesktopIconsToSurface(
+  surfaceWidth: number,
+  surfaceHeight: number,
+): void {
+  if (surfaceWidth < 8 || surfaceHeight < 8) return;
+  const { positions, setIconPosition } = useDesktopIconLayoutStore.getState();
+  for (const icon of DESKTOP_ICONS) {
+    const raw = positions[icon.id] ?? ICON_LAYOUT_DEFAULTS[icon.id];
+    const next = clampIconPositionToSurface(raw, surfaceWidth, surfaceHeight);
+    if (next.x !== raw.x || next.y !== raw.y) {
+      setIconPosition(icon.id, next);
+    }
+  }
+}
+
 type IconLayoutState = {
   /** When missing, use ICON_LAYOUT_DEFAULTS[id] */
   positions: Partial<Record<string, IconPixelPosition>>;

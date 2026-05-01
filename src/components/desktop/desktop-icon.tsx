@@ -11,6 +11,7 @@ import type { DesktopContextMenuItem } from '@/components/desktop/desktop-contex
 import { closeWindowsForDesktopIconId } from '@/lib/desktop-icon-windows';
 
 import {
+  clampIconPositionToSurface,
   ICON_HIT_BOX,
   type IconPixelPosition,
   useDesktopIconLayoutStore,
@@ -74,12 +75,7 @@ export function DesktopIcon({ config }: DesktopIconProps) {
   function clampToSurface(pos: IconPixelPosition): IconPixelPosition {
     const surf = surfaceRef?.current;
     if (!surf) return pos;
-    const maxX = Math.max(0, surf.clientWidth - ICON_HIT_BOX.w);
-    const maxY = Math.max(0, surf.clientHeight - ICON_HIT_BOX.h);
-    return {
-      x: Math.min(Math.max(0, pos.x), maxX),
-      y: Math.min(Math.max(0, pos.y), maxY),
-    };
+    return clampIconPositionToSurface(pos, surf.clientWidth, surf.clientHeight);
   }
 
   function handleOpen() {

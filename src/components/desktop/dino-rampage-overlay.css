@@ -7,7 +7,7 @@
 
 .dino-rampage__dino {
   position: fixed;
-  bottom: 10%;
+  bottom: 20%;
   max-height: min(40vh, 240px);
   width: auto;
   height: auto;

@@ -1,4 +1,11 @@
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import {
+  type AnimationEvent as ReactAnimationEvent,
+  type TransitionEvent as ReactTransitionEvent,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { useDinoRampageStore } from "@/stores/use-dino-rampage-store";
 import { useDesktopStore } from "@/stores/use-desktop-store";
@@ -9,13 +16,21 @@ type Step = "in" | "bob" | "out";
 
 type DinoRampageOverlayProps = {
   onClose: () => void;
+  /**
+   * 슬라이드 인 후 중앙에서 bob까지 끝난 순간 호출 —
+   * 미니 플레이어 흔들림 등은 여기와 맞춘다.
+   */
+  onAfterRampageImpact?: () => void;
 };
 
 function randomTiltDeg(): number {
   return Math.random() * 9 - 4.5;
 }
 
-export function DinoRampageOverlay({ onClose }: DinoRampageOverlayProps) {
+export function DinoRampageOverlay({
+  onClose,
+  onAfterRampageImpact,
+}: DinoRampageOverlayProps) {
   const [step, setStep] = useState<Step>("in");
   const [slideIn, setSlideIn] = useState(false);
   const setWindowTilts = useDinoRampageStore((s) => s.setWindowTilts);
@@ -29,6 +44,7 @@ export function DinoRampageOverlay({ onClose }: DinoRampageOverlayProps) {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       clearWindowTilts();
       closeAllWindows();
+      onAfterRampageImpact?.();
       onClose();
       return;
     }
@@ -42,10 +58,10 @@ export function DinoRampageOverlay({ onClose }: DinoRampageOverlayProps) {
       cancelAnimationFrame(id1);
       cancelAnimationFrame(id2);
     };
-  }, [clearWindowTilts, closeAllWindows, onClose, setWindowTilts]);
+  }, [clearWindowTilts, closeAllWindows, onAfterRampageImpact, onClose]);
 
   const onEnterDone = useCallback(
-    (e: React.TransitionEvent<HTMLImageElement>) => {
+    (e: ReactTransitionEvent<HTMLImageElement>) => {
       if (step !== "in" || !slideIn) return;
       if (e.propertyName !== "left" && e.propertyName !== "transform") {
         return;
@@ -64,17 +80,23 @@ export function DinoRampageOverlay({ onClose }: DinoRampageOverlayProps) {
   );
 
   const onBobDone = useCallback(
-    (e: React.AnimationEvent<HTMLImageElement>) => {
+    (e: ReactAnimationEvent<HTMLImageElement>) => {
       if (e.animationName !== "dino-rampage-bob" || step !== "bob") return;
+      onAfterRampageImpact?.();
       clearWindowTilts();
       closeAllWindows();
       setStep("out");
     },
-    [clearWindowTilts, closeAllWindows, step],
+    [
+      clearWindowTilts,
+      closeAllWindows,
+      onAfterRampageImpact,
+      step,
+    ],
   );
 
   const onOutDone = useCallback(
-    (e: React.TransitionEvent<HTMLImageElement>) => {
+    (e: ReactTransitionEvent<HTMLImageElement>) => {
       if (step !== "out") return;
       if (e.propertyName !== "left" && e.propertyName !== "transform") {
         return;
