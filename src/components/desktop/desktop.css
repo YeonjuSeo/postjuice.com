@@ -25,25 +25,11 @@
 .desktop-wallpaper {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    165deg,
-    #b8cef0 0%,
-    #dce6f8 38%,
-    #e8eef7 72%,
-    #cfd9f0 100%
-  );
-}
-
-.desktop-wallpaper::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse 80% 55% at 15% 20%,
-    rgba(255, 255, 255, 0.45),
-    transparent 55%
-  );
-  pointer-events: none;
+  background-color: #e8eaf2;
+  background-image: url("/images/desktop/desktop-wallpaper.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 .desktop-icon-surface {
