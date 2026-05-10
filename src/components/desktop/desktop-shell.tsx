@@ -16,6 +16,7 @@ import { DesktopPterosaurContext } from "@/contexts/desktop-pterosaur-context";
 import { DinoRampageOverlay } from "@/components/desktop/dino-rampage-overlay";
 import { DesktopContextMenuHost } from "@/components/desktop/desktop-context-menu-host";
 import { DesktopIcon } from "@/components/desktop/desktop-icon";
+import { DesktopSquircleTile } from "@/components/desktop/desktop-squircle-tile";
 import { PterosaurAttackOverlay } from "@/components/desktop/pterosaur-attack-overlay";
 import { DesktopWindow } from "@/components/desktop/desktop-window";
 
@@ -28,6 +29,7 @@ import {
   getForceQuitDefaultPosition,
   useDesktopIconLayoutStore,
 } from "@/stores/use-desktop-icon-layout-store";
+import { clampStoredSquircleTileToSurface } from "@/stores/use-desktop-squircle-tile-store";
 import { useDesktopStore } from "@/stores/use-desktop-store";
 
 export function DesktopShell() {
@@ -85,6 +87,10 @@ export function DesktopShell() {
         surface.clientWidth,
         surface.clientHeight,
       );
+      clampStoredSquircleTileToSurface(
+        surface.clientWidth,
+        surface.clientHeight,
+      );
     }
     function scheduleClamp() {
       if (rafId !== 0) return;
@@ -124,6 +130,7 @@ export function DesktopShell() {
               {visibleIcons.map((icon) => (
                 <DesktopIcon key={icon.id} config={icon} />
               ))}
+              <DesktopSquircleTile />
             </nav>
           </DesktopIconSurfaceContext.Provider>
 
